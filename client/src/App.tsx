@@ -1,7 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import FlashcardQuiz from './pages/FlashcardQuiz';
 import Home from './pages/Home';
 import VideoDetail from './pages/VideoDetail';
-import FlashcardQuiz from './pages/FlashcardQuiz';
 
 function App() {
   return (

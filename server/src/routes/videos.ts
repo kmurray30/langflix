@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { videos, decks } from '../data/mockData';
+import { decks, videos } from '../data/mockData';
 
 const router = Router();
 

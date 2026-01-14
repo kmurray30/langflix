@@ -1,4 +1,4 @@
-import { Video, VideoWithDeck, Deck } from '../types';
+import { Deck, Video, VideoWithDeck } from '../types';
 
 const API_BASE = '/api';
 

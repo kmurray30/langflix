@@ -1,8 +1,7 @@
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import { videos, decks } from './data/mockData';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,9 +38,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Import routes after app is configured
+import decksRouter from './routes/decks';
 import videosRouter from './routes/videos';
 import vocabRouter from './routes/vocab';
-import decksRouter from './routes/decks';
 
 app.use('/api/videos', videosRouter);
 app.use('/api/vocab', vocabRouter);

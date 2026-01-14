@@ -1,4 +1,4 @@
-import { Video, Deck } from '../types';
+import { Deck, Video } from '../types';
 
 export const videos: Video[] = [
   {
