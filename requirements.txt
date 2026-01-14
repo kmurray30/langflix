@@ -1,1 +1,1 @@
-python-dotenv
+concurrently@^8.2.2
