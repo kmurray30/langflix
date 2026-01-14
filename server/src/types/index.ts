@@ -4,6 +4,7 @@ export interface Video {
   thumbnailUrl: string;
   videoUrl: string;
   deckId: string;
+  subtitles?: Subtitle[];
 }
 
 export interface Deck {
@@ -15,6 +16,12 @@ export interface Deck {
 export interface Word {
   english: string;
   spanish: string;
+}
+
+export interface Subtitle {
+  startTime: number; // in seconds
+  endTime: number; // in seconds
+  text: string;
 }
 
 export interface UserSession {
