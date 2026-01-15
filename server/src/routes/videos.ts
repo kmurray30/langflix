@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
 import { getSubtitles } from 'youtube-caption-extractor';
 import { decks, videos } from '../data/mockData';
 import { Subtitle } from '../types';
@@ -30,7 +32,24 @@ async function fetchSubtitles(videoUrl: string): Promise<Subtitle[]> {
     return [];
   }
   
+  // Check for cached subtitles first
+  // Use path relative to project root, not __dirname (which points to src/)
+  const cacheFile = path.join(process.cwd(), 'data/subtitles', `${videoId}.json`);
+  
+  if (fs.existsSync(cacheFile)) {
+    try {
+      console.log('✓ Loading cached subtitles for:', videoId);
+      const cachedData = fs.readFileSync(cacheFile, 'utf-8');
+      return JSON.parse(cachedData);
+    } catch (error) {
+      console.error('Error reading cached subtitles, fetching fresh:', error);
+      // Continue to fetch from YouTube if cache read fails
+    }
+  }
+  
+  // Fetch from YouTube if no cache exists or cache read failed
   try {
+    console.log('→ Fetching subtitles from YouTube for:', videoId);
     const captions = await getSubtitles({ videoID: videoId, lang: 'en' });
     
     if (!captions || captions.length === 0) {
@@ -44,6 +63,15 @@ async function fetchSubtitles(videoUrl: string): Promise<Subtitle[]> {
       endTime: parseFloat(caption.start) + parseFloat(caption.dur),
       text: caption.text
     }));
+    
+    // Save to cache
+    try {
+      fs.writeFileSync(cacheFile, JSON.stringify(subtitles, null, 2), 'utf-8');
+      console.log('✓ Cached subtitles for:', videoId);
+    } catch (writeError) {
+      console.error('Warning: Could not cache subtitles:', writeError);
+      // Non-fatal, continue with fetched subtitles
+    }
     
     return subtitles;
   } catch (error) {
