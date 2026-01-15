@@ -112,29 +112,31 @@ function VideoDetail() {
 
   const onPlayerReady = () => {
     console.log('YouTube player ready');
+    // Start polling immediately even when not playing (for scrubbing support)
+    startPolling(50);
+  };
+
+  const startPolling = (interval: number) => {
+    if (timeUpdateIntervalRef.current) {
+      clearInterval(timeUpdateIntervalRef.current);
+    }
+    
+    timeUpdateIntervalRef.current = window.setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        const time = playerRef.current.getCurrentTime();
+        setCurrentTime(time);
+      }
+    }, interval);
   };
 
   const onPlayerStateChange = (event: any) => {
     // YT.PlayerState.PLAYING = 1
     if (event.data === 1) {
-      // Start polling current time when playing
-      if (timeUpdateIntervalRef.current) {
-        clearInterval(timeUpdateIntervalRef.current);
-      }
-      
-      timeUpdateIntervalRef.current = window.setInterval(() => {
-        if (playerRef.current && playerRef.current.getCurrentTime) {
-          const time = playerRef.current.getCurrentTime();
-          setCurrentTime(time);
-        }
-      }, 250); // Poll every 250ms
-    } else {
-      // Stop polling when paused or stopped
-      if (timeUpdateIntervalRef.current) {
-        clearInterval(timeUpdateIntervalRef.current);
-        timeUpdateIntervalRef.current = null;
-      }
+      // Poll at 100ms when playing
+      startPolling(100);
     }
+    // For all other states (paused, buffering, etc), keep polling at 50ms
+    // This ensures scrubbing works smoothly
   };
 
   // Update current subtitle based on current time
@@ -144,10 +146,17 @@ function VideoDetail() {
       return;
     }
 
-    // Find the subtitle that matches the current time
-    const subtitle = video.subtitles.find(
+    // Find all subtitles that match the current time
+    const matchingSubtitles = video.subtitles.filter(
       sub => currentTime >= sub.startTime && currentTime <= sub.endTime
     );
+
+    // If multiple subtitles overlap, show the one that started most recently
+    const subtitle = matchingSubtitles.length > 0
+      ? matchingSubtitles.reduce((latest, current) => 
+          current.startTime > latest.startTime ? current : latest
+        )
+      : null;
 
     setCurrentSubtitle(subtitle ? subtitle.text : '');
   }, [currentTime, video?.subtitles]);
