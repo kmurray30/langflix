@@ -1,49 +1,47 @@
 [
-    { "spanish": "había", "english": "there was" },
-    { "spanish": "una", "english": "a" },
-    { "spanish": "vez", "english": "time" },
-    { "spanish": "había una vez", "english": "once upon a time" },
+    { "spanish": ["había"], "english": "there was" },
+    { "spanish": ["una"], "english": "a (f)" },
+    { "spanish": ["vez"], "english": "time" },
+    { "spanish": ["había una vez"], "english": "once upon a time" },
   
-    { "spanish": "lo", "english": "it" },
-    { "spanish": "siento", "english": "feel" },
-    { "spanish": "lo siento", "english": "sorry" },
+    { "spanish": ["lo"], "english": "it/that (as in \"I have it\")" },
+    { "spanish": ["siento"], "english": "I feel" },
+    { "spanish": ["lo siento"], "english": "sorry" },
   
-    { "spanish": "papá", "english": "dad" },
-    { "spanish": "cerdito", "english": "piglet" },
+    { "spanish": ["papá"], "english": "dad" },
+    { "spanish": ["cerdito"], "english": "piglet" },
   
-    { "spanish": "un", "english": "a" },
-    { "spanish": "mono", "english": "monkey" },
-    { "spanish": "rojo", "english": "red" },
+    { "spanish": ["mono"], "english": "monkey" },
+    { "spanish": ["rojo"], "english": "red (m)" },
   
-    { "spanish": "y", "english": "and" },
-    { "spanish": "este", "english": "this" },
+    { "spanish": ["y"], "english": "and" },
+    { "spanish": ["este"], "english": "this (m) (as in \"this book\")" },
   
-    { "spanish": "se", "english": "self" },
-    { "spanish": "bañó", "english": "bathed" },
-    { "spanish": "se bañó", "english": "bathed himself" },
+    { "spanish": ["se"], "english": "himself" },
+    { "spanish": ["bañó"], "english": "he bathed" },
+    { "spanish": ["se bañó"], "english": "he bathed himself" },
   
-    { "spanish": "limpió", "english": "cleaned" },
-    { "spanish": "sus", "english": "his" },
-    { "spanish": "dientes", "english": "teeth" },
-    { "spanish": "se limpió sus dientes", "english": "brushed his teeth" },
+    { "spanish": ["limpió"], "english": "he cleaned" },
+    { "spanish": ["sus"], "english": "his (pl) (as in \"his teeth\")" },
+    { "spanish": ["dientes"], "english": "teeth" },
+    { "spanish": ["se limpió sus dientes"], "english": "he brushed his teeth" },
   
-    { "spanish": "fue", "english": "went" },
-    { "spanish": "a", "english": "to" },
-    { "spanish": "la", "english": "the" },
-    { "spanish": "cama", "english": "bed" },
-    { "spanish": "se fue a la cama", "english": "went to bed" },
+    { "spanish": ["fue"], "english": "he went" },
+    { "spanish": ["a"], "english": "to" },
+    { "spanish": ["la"], "english": "the (f)" },
+    { "spanish": ["cama"], "english": "bed" },
+    { "spanish": ["se fue a la cama"], "english": "he went to bed" },
+
+    { "spanish": ["pronto"], "english": "soon" },
+    { "spanish": ["quedó"], "english": "he stayed" },
+    { "spanish": ["dormido"], "english": "asleep" },
+    { "spanish": ["se quedó dormido"], "english": "he fell asleep" },
   
-    { "spanish": "pronto", "english": "soon" },
-    { "spanish": "quedó", "english": "remained" },
-    { "spanish": "dormido", "english": "asleep" },
-    { "spanish": "se quedó dormido", "english": "fell asleep" },
+    { "spanish": ["buenas"], "english": "good (f, pl)" },
+    { "spanish": ["noches"], "english": "nights (pl)" },
+    { "spanish": ["buenas noches"], "english": "good night" },
   
-    { "spanish": "buenas", "english": "good" },
-    { "spanish": "noches", "english": "night" },
-    { "spanish": "buenas noches", "english": "good night" },
-  
-    { "spanish": "están", "english": "are" },
-    { "spanish": "dormidos", "english": "asleep" },
-    { "spanish": "están dormidos", "english": "are asleep" }
+    { "spanish": ["están"], "english": "they are" },
+    { "spanish": ["dormidos"], "english": "asleep (m, pl)" },
+    { "spanish": ["están dormidos"], "english": "they are asleep" }
   ]
-  

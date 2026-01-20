@@ -60,8 +60,10 @@ function FlashcardQuiz() {
 
     const currentWord = deck.words[currentIndex];
     const normalizedUserAnswer = normalizeString(userInput);
-    const normalizedCorrectAnswer = normalizeString(currentWord.spanish);
-    const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
+    // Check if user answer matches ANY of the acceptable Spanish translations
+    const isCorrect = currentWord.spanish.some(spanishVariant => 
+      normalizeString(spanishVariant) === normalizedUserAnswer
+    );
 
     // Record the answer
     const newAnswer: Answer = {
@@ -144,7 +146,7 @@ function FlashcardQuiz() {
                   </div>
                   {!answer.isCorrect && (
                     <div className="correct-answer">
-                      Correct answer: <span>{answer.word.spanish}</span>
+                      Correct answer: <span>{answer.word.spanish[0]}</span>
                     </div>
                   )}
                 </div>

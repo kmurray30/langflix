@@ -15,7 +15,7 @@ export interface Deck {
 
 export interface Word {
   english: string;
-  spanish: string;
+  spanish: string[]; // Array of acceptable Spanish translations (first is primary)
 }
 
 export interface Subtitle {

@@ -253,7 +253,7 @@ function VideoDetail() {
               <div key={index} className="word-preview-item">
                 <span className="english">{word.english}</span>
                 <span className="separator">→</span>
-                <span className="spanish">{word.spanish}</span>
+                <span className="spanish">{word.spanish[0]}</span>
               </div>
             ))}
             {video.deck.words.length > 3 && (
