@@ -21,6 +21,12 @@ interface Answer {
   isCorrect: boolean;
 }
 
+interface AnswerResult {
+  isCorrect: boolean;
+  userAnswer: string;
+  correctAnswer: string;
+}
+
 function FlashcardQuiz() {
   const { deckId } = useParams<{ deckId: string }>();
   const navigate = useNavigate();
@@ -33,12 +39,26 @@ function FlashcardQuiz() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [showingFeedback, setShowingFeedback] = useState(false);
+  const [currentAnswerResult, setCurrentAnswerResult] = useState<AnswerResult | null>(null);
 
   useEffect(() => {
     if (deckId) {
       loadDeck(deckId);
     }
   }, [deckId]);
+
+  // Handle Enter key press when feedback is showing
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (showingFeedback && event.key === 'Enter') {
+        handleContinue();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [showingFeedback, currentIndex, deck]);
 
   const loadDeck = async (id: string) => {
     try {
@@ -74,7 +94,23 @@ function FlashcardQuiz() {
     const updatedAnswers = [...answers, newAnswer];
     setAnswers(updatedAnswers);
 
-    // Move to next word or finish
+    // Show feedback instead of immediately advancing
+    setCurrentAnswerResult({
+      isCorrect,
+      userAnswer: userInput,
+      correctAnswer: currentWord.spanish[0],
+    });
+    setShowingFeedback(true);
+  };
+
+  const handleContinue = () => {
+    // Clear feedback state
+    setShowingFeedback(false);
+    setCurrentAnswerResult(null);
+    
+    // Advance to next question or complete quiz
+    if (!deck) return;
+    
     if (currentIndex < deck.words.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setUserInput('');
@@ -189,23 +225,45 @@ function FlashcardQuiz() {
             <div className="prompt-word">{currentWord.english}</div>
           </div>
 
-          <form onSubmit={handleSubmit} className="answer-form">
-            <div className="input-group">
-              <label htmlFor="answer-input">Type the Spanish translation:</label>
-              <input
-                id="answer-input"
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                placeholder="Type your answer..."
-                autoFocus
-                autoComplete="off"
-              />
+          {!showingFeedback ? (
+            <form onSubmit={handleSubmit} className="answer-form">
+              <div className="input-group">
+                <label htmlFor="answer-input">Type the Spanish translation:</label>
+                <input
+                  id="answer-input"
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder="Type your answer..."
+                  autoFocus
+                  autoComplete="off"
+                />
+              </div>
+              <button type="submit" className="submit-button">
+                Submit
+              </button>
+            </form>
+          ) : (
+            <div className={`feedback-card ${currentAnswerResult?.isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`}>
+              <div className="feedback-indicator">
+                {currentAnswerResult?.isCorrect ? '✓' : '✗'}
+              </div>
+              <div className="feedback-message">
+                {currentAnswerResult?.isCorrect ? 'Correct!' : 'Incorrect'}
+              </div>
+              <div className="feedback-details">
+                <div className="feedback-user-answer">
+                  You answered: <span>{currentAnswerResult?.userAnswer}</span>
+                </div>
+                <div className="feedback-correct-answer">
+                  Correct answer: <span>{currentAnswerResult?.correctAnswer}</span>
+                </div>
+              </div>
+              <button onClick={handleContinue} className="continue-button" autoFocus>
+                {currentIndex < deck.words.length - 1 ? 'Continue' : 'Finish'}
+              </button>
             </div>
-            <button type="submit" className="submit-button">
-              {currentIndex < deck.words.length - 1 ? 'Next' : 'Finish'}
-            </button>
-          </form>
+          )}
         </div>
       </div>
     </div>
