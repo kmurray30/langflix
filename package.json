@@ -14,10 +14,17 @@
     "dev:client": "cd client && npm run dev",
     "build": "cd client && npm run build && cd ../server && npm run build",
     "start:server": "cd server && npm start",
-    "start:client": "cd client && npm run preview"
+    "start:client": "cd client && npm run preview",
+    "fetch-subtitles": "tsx scripts/fetch-subtitles.ts",
+    "wordcount": "tsx scripts/wordcount.ts"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.10.6"
+  },
+  "dependencies": {
+    "youtube-caption-extractor": "^1.9.1"
   }
 }
 

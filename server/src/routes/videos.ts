@@ -23,23 +23,52 @@ function extractVideoId(url: string): string | null {
   return null;
 }
 
+// Helper function to slugify a title for filename
+function slugifyTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Remove consecutive hyphens
+    .trim();
+}
+
 // Helper function to fetch subtitles from YouTube
-async function fetchSubtitles(videoUrl: string): Promise<Subtitle[]> {
-  const videoId = extractVideoId(videoUrl);
+async function fetchSubtitles(videoUrl: string, appVideoId: string, videoTitle: string): Promise<Subtitle[]> {
+  const youtubeId = extractVideoId(videoUrl);
   
-  if (!videoId) {
-    console.warn('Could not extract video ID from URL:', videoUrl);
+  if (!youtubeId) {
+    console.warn('Could not extract YouTube video ID from URL:', videoUrl);
     return [];
   }
   
-  // Check for cached subtitles first
-  // Use path relative to project root, not __dirname (which points to src/)
-  const cacheFile = path.join(process.cwd(), 'data/subtitles', `${videoId}.json`);
+  // Generate new filename format: {appVideoId}-{slugified-title}.json
+  const slugifiedTitle = slugifyTitle(videoTitle);
+  const newFilename = `${appVideoId}-${slugifiedTitle}.json`;
+  const subtitlesDir = path.join(process.cwd(), 'server/data/subtitles');
   
-  if (fs.existsSync(cacheFile)) {
+  // Try new format first
+  const newCacheFile = path.join(subtitlesDir, newFilename);
+  
+  // Try old format as fallback (YouTube ID only)
+  const oldCacheFile = path.join(subtitlesDir, `${youtubeId}.json`);
+  
+  // Check for cached subtitles (new format first, then old format)
+  if (fs.existsSync(newCacheFile)) {
     try {
-      console.log('✓ Loading cached subtitles for:', videoId);
-      const cachedData = fs.readFileSync(cacheFile, 'utf-8');
+      console.log('✓ Loading cached subtitles (new format):', newFilename);
+      const cachedData = fs.readFileSync(newCacheFile, 'utf-8');
+      return JSON.parse(cachedData);
+    } catch (error) {
+      console.error('Error reading cached subtitles (new format), will try old format:', error);
+    }
+  }
+  
+  // Try old format as fallback
+  if (fs.existsSync(oldCacheFile)) {
+    try {
+      console.log('✓ Loading cached subtitles (old format):', youtubeId);
+      const cachedData = fs.readFileSync(oldCacheFile, 'utf-8');
       return JSON.parse(cachedData);
     } catch (error) {
       console.error('Error reading cached subtitles, fetching fresh:', error);
@@ -49,11 +78,11 @@ async function fetchSubtitles(videoUrl: string): Promise<Subtitle[]> {
   
   // Fetch from YouTube if no cache exists or cache read failed
   try {
-    console.log('→ Fetching subtitles from YouTube for:', videoId);
-    const captions = await getSubtitles({ videoID: videoId, lang: 'en' });
+    console.log('→ Fetching subtitles from YouTube for:', youtubeId);
+    const captions = await getSubtitles({ videoID: youtubeId, lang: 'en' });
     
     if (!captions || captions.length === 0) {
-      console.warn('No captions available for video:', videoId);
+      console.warn('No captions available for video:', youtubeId);
       return [];
     }
     
@@ -64,10 +93,10 @@ async function fetchSubtitles(videoUrl: string): Promise<Subtitle[]> {
       text: caption.text
     }));
     
-    // Save to cache
+    // Save to cache using new filename format
     try {
-      fs.writeFileSync(cacheFile, JSON.stringify(subtitles, null, 2), 'utf-8');
-      console.log('✓ Cached subtitles for:', videoId);
+      fs.writeFileSync(newCacheFile, JSON.stringify(subtitles, null, 2), 'utf-8');
+      console.log('✓ Cached subtitles:', newFilename);
     } catch (writeError) {
       console.error('Warning: Could not cache subtitles:', writeError);
       // Non-fatal, continue with fetched subtitles
@@ -75,7 +104,7 @@ async function fetchSubtitles(videoUrl: string): Promise<Subtitle[]> {
     
     return subtitles;
   } catch (error) {
-    console.error('Error fetching subtitles for video:', videoId, error);
+    console.error('Error fetching subtitles for video:', youtubeId, error);
     return [];
   }
 }
@@ -95,8 +124,8 @@ router.get('/:id', async (req, res) => {
   
   const deck = decks.find(d => d.id === video.deckId);
   
-  // Fetch subtitles from YouTube (no more mock data)
-  const subtitles = await fetchSubtitles(video.videoUrl);
+  // Fetch subtitles from YouTube (passing video ID and title for new filename format)
+  const subtitles = await fetchSubtitles(video.videoUrl, video.id, video.title);
   
   res.json({
     ...video,
