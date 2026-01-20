@@ -38,5 +38,18 @@ export const api = {
 
   // Get deck by ID for flashcard quiz
   getDeck: (deckId: string) => apiFetch<Deck>(`/decks/${deckId}`),
+
+  // Update word progress after quiz answer
+  updateWordProgress: (deckId: string, spanish: string, wasCorrect: boolean) =>
+    apiFetch<{ success: boolean }>(`/vocab/${deckId}/progress`, {
+      method: 'POST',
+      body: JSON.stringify({ spanish, wasCorrect }),
+    }),
+
+  // Reset deck progress (set all words to confidence 0)
+  resetDeckProgress: (deckId: string) =>
+    apiFetch<{ success: boolean }>(`/vocab/${deckId}/progress`, {
+      method: 'DELETE',
+    }),
 };
 

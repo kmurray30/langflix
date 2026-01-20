@@ -1,47 +1,47 @@
 [
-    { "spanish": ["había"], "english": "there was" },
-    { "spanish": ["una"], "english": "a (f)" },
-    { "spanish": ["vez"], "english": "time" },
-    { "spanish": ["había una vez"], "english": "once upon a time" },
-  
-    { "spanish": ["lo"], "english": "it/that (as in \"I have it\")" },
-    { "spanish": ["siento"], "english": "I feel" },
-    { "spanish": ["lo siento"], "english": "sorry" },
-  
-    { "spanish": ["papá"], "english": "dad" },
-    { "spanish": ["cerdito"], "english": "piglet" },
-  
-    { "spanish": ["mono"], "english": "monkey" },
-    { "spanish": ["rojo"], "english": "red (m)" },
-  
-    { "spanish": ["y"], "english": "and" },
-    { "spanish": ["este"], "english": "this (m) (as in \"this book\")" },
-  
-    { "spanish": ["se"], "english": "himself" },
-    { "spanish": ["bañó"], "english": "he bathed" },
-    { "spanish": ["se bañó"], "english": "he bathed himself" },
-  
-    { "spanish": ["limpió"], "english": "he cleaned" },
-    { "spanish": ["sus"], "english": "his (pl) (as in \"his teeth\")" },
-    { "spanish": ["dientes"], "english": "teeth" },
-    { "spanish": ["se limpió sus dientes"], "english": "he brushed his teeth" },
-  
-    { "spanish": ["fue"], "english": "he went" },
-    { "spanish": ["a"], "english": "to" },
-    { "spanish": ["la"], "english": "the (f)" },
-    { "spanish": ["cama"], "english": "bed" },
-    { "spanish": ["se fue a la cama"], "english": "he went to bed" },
+  { "spanish": ["había"], "english": "there was", "order": 1 },
+  { "spanish": ["una"], "english": "a (f)", "order": 2 },
+  { "spanish": ["vez"], "english": "time", "order": 3 },
+  { "spanish": ["había una vez"], "english": "once upon a time", "order": 4 },
 
-    { "spanish": ["pronto"], "english": "soon" },
-    { "spanish": ["quedó"], "english": "he stayed" },
-    { "spanish": ["dormido"], "english": "asleep" },
-    { "spanish": ["se quedó dormido"], "english": "he fell asleep" },
-  
-    { "spanish": ["buenas"], "english": "good (f, pl)" },
-    { "spanish": ["noches"], "english": "nights (pl)" },
-    { "spanish": ["buenas noches"], "english": "good night" },
-  
-    { "spanish": ["están"], "english": "they are" },
-    { "spanish": ["dormidos"], "english": "asleep (m, pl)" },
-    { "spanish": ["están dormidos"], "english": "they are asleep" }
-  ]
+  { "spanish": ["lo"], "english": "it/that (as in \"I have it\")", "order": 5 },
+  { "spanish": ["siento"], "english": "I feel", "order": 6 },
+  { "spanish": ["lo siento"], "english": "I'm sorry", "order": 7 },
+
+  { "spanish": ["papá"], "english": "dad", "order": 8 },
+  { "spanish": ["cerdito"], "english": "piglet", "order": 9 },
+
+  { "spanish": ["mono"], "english": "monkey", "order": 10 },
+  { "spanish": ["rojo"], "english": "red (m)", "order": 11 },
+
+  { "spanish": ["y"], "english": "and", "order": 12 },
+  { "spanish": ["este"], "english": "this (m) (as in \"this book\")", "order": 13 },
+
+  { "spanish": ["se"], "english": "himself", "order": 14 },
+  { "spanish": ["bañó"], "english": "he bathed", "order": 15 },
+  { "spanish": ["se bañó"], "english": "he bathed himself", "order": 16 },
+
+  { "spanish": ["limpió"], "english": "he cleaned", "order": 17 },
+  { "spanish": ["sus"], "english": "his (pl) (as in \"his teeth\")", "order": 18 },
+  { "spanish": ["dientes"], "english": "teeth", "order": 19 },
+  { "spanish": ["se limpió sus dientes"], "english": "he brushed his teeth", "order": 20 },
+
+  { "spanish": ["fue"], "english": "he went", "order": 21 },
+  { "spanish": ["a"], "english": "to", "order": 22 },
+  { "spanish": ["la"], "english": "the (f)", "order": 23 },
+  { "spanish": ["cama"], "english": "bed", "order": 24 },
+  { "spanish": ["se fue a la cama"], "english": "he went to bed", "order": 25 },
+
+  { "spanish": ["pronto"], "english": "soon", "order": 26 },
+  { "spanish": ["quedó"], "english": "he stayed", "order": 27 },
+  { "spanish": ["dormido"], "english": "asleep", "order": 28 },
+  { "spanish": ["se quedó dormido"], "english": "he fell asleep", "order": 29 },
+
+  { "spanish": ["buenas"], "english": "good (f, pl)", "order": 30 },
+  { "spanish": ["noches"], "english": "nights (pl)", "order": 31 },
+  { "spanish": ["buenas noches"], "english": "good night", "order": 32 },
+
+  { "spanish": ["están"], "english": "they are", "order": 33 },
+  { "spanish": ["dormidos"], "english": "asleep (m, pl)", "order": 34 },
+  { "spanish": ["están dormidos"], "english": "they are asleep", "order": 35 }
+]

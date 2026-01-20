@@ -73,10 +73,10 @@ function FlashcardQuiz() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
-    if (!deck || !userInput.trim()) return;
+    if (!deck || !userInput.trim() || !deckId) return;
 
     const currentWord = deck.words[currentIndex];
     const normalizedUserAnswer = normalizeString(userInput);
@@ -93,6 +93,14 @@ function FlashcardQuiz() {
     };
     const updatedAnswers = [...answers, newAnswer];
     setAnswers(updatedAnswers);
+
+    // Update word progress on backend
+    try {
+      await api.updateWordProgress(deckId, currentWord.spanish[0], isCorrect);
+    } catch (err) {
+      console.error('Failed to update word progress:', err);
+      // Continue with quiz even if progress update fails
+    }
 
     // Show feedback instead of immediately advancing
     setCurrentAnswerResult({
@@ -119,7 +127,12 @@ function FlashcardQuiz() {
     }
   };
 
-  const handleRestart = () => {
+  const handleRestart = async () => {
+    // Reload deck from server to get updated word list (excluding newly learned words)
+    if (deckId) {
+      await loadDeck(deckId);
+    }
+    
     setQuizState('quiz');
     setCurrentIndex(0);
     setUserInput('');
@@ -144,6 +157,20 @@ function FlashcardQuiz() {
           ← Back
         </button>
         <div className="message error">{error || 'Deck not found'}</div>
+      </div>
+    );
+  }
+
+  // Check if all words are learned (no words left to practice)
+  if (deck.words.length === 0) {
+    return (
+      <div className="flashcard-quiz">
+        <button className="back-button" onClick={() => navigate('/')}>
+          ← Back
+        </button>
+        <div className="message">
+          Congratulations! You've learned all the words in this deck!
+        </div>
       </div>
     );
   }
