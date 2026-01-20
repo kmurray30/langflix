@@ -4,6 +4,7 @@ import * as path from 'path';
 import { getSubtitles } from 'youtube-caption-extractor';
 import { decks, videos } from '../data/mockData';
 import { Subtitle } from '../types';
+import { loadTranslations, slugifyTitle } from '../utils/translations';
 
 const router = Router();
 
@@ -21,16 +22,6 @@ function extractVideoId(url: string): string | null {
   }
   
   return null;
-}
-
-// Helper function to slugify a title for filename
-function slugifyTitle(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Remove consecutive hyphens
-    .trim();
 }
 
 // Helper function to fetch subtitles from YouTube
@@ -122,7 +113,25 @@ router.get('/:id', async (req, res) => {
     return res.status(404).json({ error: 'Video not found' });
   }
   
-  const deck = decks.find(d => d.id === video.deckId);
+  // Load deck: use translation file for video-3, mockData for others
+  let deck;
+  if (video.id === 'video-3') {
+    // Load from translation file
+    const words = loadTranslations(video.id, video.title);
+    if (words) {
+      deck = {
+        id: video.deckId,
+        name: `Story Vocabulary - ${video.title}`,
+        words: words
+      };
+    } else {
+      // If translation file doesn't exist, return null deck
+      deck = null;
+    }
+  } else {
+    // Use mockData for video-1 and video-2
+    deck = decks.find(d => d.id === video.deckId);
+  }
   
   // Fetch subtitles from YouTube (passing video ID and title for new filename format)
   const subtitles = await fetchSubtitles(video.videoUrl, video.id, video.title);
