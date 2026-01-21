@@ -142,5 +142,21 @@
         "lastSeen": "2026-01-20T22:43:14.111Z"
       }
     }
+  },
+  "SGs6R7yEWIYceIJwFD5oGAkJZUDGGGg-": {
+    "deck-3": {
+      "había": {
+        "confidence": 100,
+        "lastSeen": "2026-01-21T00:40:32.113Z"
+      },
+      "una": {
+        "confidence": 100,
+        "lastSeen": "2026-01-21T00:40:35.338Z"
+      },
+      "vez": {
+        "confidence": 100,
+        "lastSeen": "2026-01-21T00:40:37.516Z"
+      }
+    }
   }
 }

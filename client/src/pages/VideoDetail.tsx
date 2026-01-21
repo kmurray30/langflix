@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api';
+import FlashcardWidget from '../components/FlashcardWidget';
+import '../components/FlashcardWidget.css';
 import { VideoWithDeck } from '../types';
 import './VideoDetail.css';
 
@@ -19,6 +21,7 @@ function VideoDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [addingDeck, setAddingDeck] = useState(false);
+  const [showFlashcards, setShowFlashcards] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [currentSubtitle, setCurrentSubtitle] = useState<string>('');
   
@@ -180,8 +183,8 @@ function VideoDetail() {
     try {
       setAddingDeck(true);
       await api.addDeckToVocab(video.deck.id);
-      // Navigate to flashcard page after adding
-      navigate(`/flashcards/${video.deck.id}`);
+      // Show the flashcard modal instead of navigating away
+      setShowFlashcards(true);
     } catch (err) {
       console.error('Failed to add deck:', err);
       alert('Failed to add deck to vocab');
@@ -261,6 +264,18 @@ function VideoDetail() {
                 +{video.deck.words.length - 3} more words
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Flashcard Modal Overlay */}
+      {showFlashcards && video.deck && (
+        <div className="flashcard-modal-overlay">
+          <div className="flashcard-modal-content">
+            <FlashcardWidget 
+              deckId={video.deck.id} 
+              onClose={() => setShowFlashcards(false)} 
+            />
           </div>
         </div>
       )}
