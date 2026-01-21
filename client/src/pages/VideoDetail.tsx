@@ -165,14 +165,15 @@ function VideoDetail() {
     setCurrentSubtitle(subtitle ? subtitle.text : '');
   }, [currentTime, video?.subtitles]);
 
-  const loadVideo = async (videoId: string) => {
+  const loadVideo = async (videoId: string, skipAutoOpen: boolean = false) => {
     try {
       setLoading(true);
       const fetchedVideo = await api.getVideo(videoId);
       setVideo(fetchedVideo);
       
       // Auto-open flashcards if there are unlearned words and user hasn't closed it
-      if (fetchedVideo.deck && fetchedVideo.deck.words.length > 0 && !userClosedWidget) {
+      // Skip auto-open if explicitly requested (e.g., after closing flashcards)
+      if (!skipAutoOpen && fetchedVideo.deck && fetchedVideo.deck.words.length > 0 && !userClosedWidget) {
         // Check if not all words are learned by looking at deck stats
         const allWordsLearned = fetchedVideo.deck.learnedCount === fetchedVideo.deck.totalCount 
           && (fetchedVideo.deck.totalCount ?? 0) > 0;
@@ -193,9 +194,9 @@ function VideoDetail() {
     setShowFlashcards(false);
     setUserClosedWidget(true);
     
-    // Reload video to get updated progress stats
+    // Reload video to get updated progress stats, but skip auto-open
     if (id) {
-      await loadVideo(id);
+      await loadVideo(id, true);
     }
   };
 

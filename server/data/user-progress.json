@@ -170,5 +170,17 @@
         "lastSeen": "2026-01-21T01:23:40.623Z"
       }
     }
+  },
+  "8n0Ru-BAswVgW7H_AEAevaBewoKXmiA8": {
+    "deck-3": {
+      "había": {
+        "confidence": 100,
+        "lastSeen": "2026-01-21T01:30:36.481Z"
+      },
+      "una": {
+        "confidence": 1,
+        "lastSeen": "2026-01-21T01:30:49.943Z"
+      }
+    }
   }
 }
