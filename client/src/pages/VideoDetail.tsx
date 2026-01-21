@@ -256,66 +256,58 @@ function VideoDetail() {
         ← Back
       </button>
 
-      {/* Progress Section */}
+      {/* Title */}
+      <h1 className="video-title">{video.title}</h1>
+
+      {/* Horizontal Progress Bar */}
       {video.deck && (video.deck.totalCount ?? 0) > 0 && (
         <div className="progress-section">
           {video.deck.learnedCount === video.deck.totalCount ? (
-            // Completion banner when all words are learned
-            <div className="completion-banner">
-              <div className="completion-message">
-                🎉 Amazing! You've learned all {video.deck.totalCount} words! 🎉
-              </div>
-            </div>
+            // Completion message when all words are learned
+            <span className="completion-message">
+              🎉 Amazing! You've learned all {video.deck.totalCount} words! 🎉
+            </span>
           ) : (
-            // Progress bar when still learning
+            // Horizontal progress bar when still learning
             <>
-              <div className="progress-header">
-                Vocabulary Progress: {video.deck.learnedCount}/{video.deck.totalCount}
-              </div>
-              <div className="progress-bar-container">
-                <div className="progress-bar-track">
-                  <div 
-                    className="progress-bar-fill" 
-                    style={{ width: `${video.deck.percentLearned}%` }}
-                  />
-                </div>
-                <div className="progress-text">
-                  {video.deck.learnedCount} / {video.deck.totalCount} learned ({video.deck.percentLearned}%)
-                </div>
+              <span className="progress-label">
+                Progress {video.deck.learnedCount}/{video.deck.totalCount}
+              </span>
+              <div className="progress-bar-track">
+                <div 
+                  className="progress-bar-fill" 
+                  style={{ width: `${video.deck.percentLearned}%` }}
+                />
               </div>
             </>
           )}
           
-          <div className="progress-actions">
-            <button 
-              className="practice-button" 
-              onClick={handleOpenFlashcards}
-              disabled={video.deck.learnedCount === video.deck.totalCount}
-            >
-              Practice Vocabulary
-            </button>
-            <button 
-              className="reset-button" 
-              onClick={handleResetProgress}
-              disabled={resettingProgress}
-            >
-              {resettingProgress ? 'Resetting...' : 'Reset Progress'}
-            </button>
-          </div>
+          <button 
+            className="practice-button" 
+            onClick={handleOpenFlashcards}
+            disabled={video.deck.learnedCount === video.deck.totalCount}
+          >
+            Practice
+          </button>
+          <button 
+            className="reset-button" 
+            onClick={handleResetProgress}
+            disabled={resettingProgress}
+          >
+            {resettingProgress ? 'Resetting...' : 'Reset'}
+          </button>
         </div>
       )}
 
-      <div className="video-container">
-        <h1 className="video-title">{video.title}</h1>
-        <div className="video-player">
-          <div ref={playerContainerRef} />
-        </div>
-        
-        {/* Subtitle display window */}
-        <div className="subtitle-window">
-          <div className="subtitle-text">
-            {currentSubtitle || '\u00A0'}
-          </div>
+      {/* Video Player */}
+      <div className="video-player">
+        <div ref={playerContainerRef} />
+      </div>
+      
+      {/* Subtitle Bar */}
+      <div className="subtitle-window">
+        <div className="subtitle-text">
+          {currentSubtitle || '\u00A0'}
         </div>
       </div>
 

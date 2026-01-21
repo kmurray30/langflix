@@ -1,8 +1,11 @@
 .video-detail {
-  min-height: 100vh;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .back-button {
@@ -10,94 +13,68 @@
   border: none;
   color: #6366f1;
   font-size: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 0;
   transition: color 0.2s;
+  flex-shrink: 0;
 }
 
 .back-button:hover {
   color: #8b5cf6;
 }
 
-/* Progress Section */
+/* Progress Section - Horizontal Single Line */
 .progress-section {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-}
-
-.completion-banner {
-  text-align: center;
-  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
 }
 
 .completion-message {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
   background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: celebration 0.6s ease-in-out;
+  flex: 1;
 }
 
-@keyframes celebration {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.progress-header {
-  font-size: 1.1rem;
+.progress-label {
+  font-size: 0.9rem;
   font-weight: 600;
   color: #e5e7eb;
-  margin-bottom: 1rem;
-}
-
-.progress-bar-container {
-  margin-bottom: 2rem;
+  white-space: nowrap;
 }
 
 .progress-bar-track {
-  width: 100%;
-  height: 12px;
+  flex: 1;
+  height: 8px;
   background-color: #333;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 0.75rem;
+  min-width: 150px;
 }
 
 .progress-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-  border-radius: 6px;
+  border-radius: 4px;
   transition: width 0.5s ease-in-out;
-}
-
-.progress-text {
-  font-size: 1rem;
-  color: #9ca3af;
-  text-align: left;
-}
-
-.progress-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .practice-button {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   border: none;
   color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: transform 0.2s, box-shadow 0.2s;
-  flex: 1;
-  min-width: 150px;
+  white-space: nowrap;
 }
 
 .practice-button:hover:not(:disabled) {
@@ -115,13 +92,12 @@
   background-color: #374151;
   border: 2px solid #4b5563;
   color: #d1d5db;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.2s;
-  flex: 1;
-  min-width: 150px;
+  white-space: nowrap;
 }
 
 .reset-button:hover:not(:disabled) {
@@ -142,8 +118,9 @@
 }
 
 .video-title {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
 }
 
 .video-player {
@@ -151,7 +128,12 @@
   border-radius: 8px;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .video-player iframe,
@@ -165,14 +147,15 @@
 .subtitle-window {
   background-color: rgba(0, 0, 0, 0.85);
   border-radius: 8px;
-  padding: 1.25rem 2rem;
-  min-height: 70px;
+  padding: 0.75rem 1.5rem;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid #333;
   transition: border-color 0.3s;
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .subtitle-window:has(.subtitle-text:not(:empty)) {
@@ -181,8 +164,8 @@
 
 .subtitle-text {
   color: #fff;
-  font-size: 1.15rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.5;
   text-align: center;
   font-weight: 500;
   transition: opacity 0.15s ease-in-out;
