@@ -20,8 +20,9 @@ function VideoDetail() {
   const [video, setVideo] = useState<VideoWithDeck | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [addingDeck, setAddingDeck] = useState(false);
   const [showFlashcards, setShowFlashcards] = useState(false);
+  const [userClosedWidget, setUserClosedWidget] = useState(false);
+  const [resettingProgress, setResettingProgress] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [currentSubtitle, setCurrentSubtitle] = useState<string>('');
   
@@ -169,6 +170,17 @@ function VideoDetail() {
       setLoading(true);
       const fetchedVideo = await api.getVideo(videoId);
       setVideo(fetchedVideo);
+      
+      // Auto-open flashcards if there are unlearned words and user hasn't closed it
+      if (fetchedVideo.deck && fetchedVideo.deck.words.length > 0 && !userClosedWidget) {
+        // Check if not all words are learned by looking at deck stats
+        const allWordsLearned = fetchedVideo.deck.learnedCount === fetchedVideo.deck.totalCount 
+          && (fetchedVideo.deck.totalCount ?? 0) > 0;
+        
+        if (!allWordsLearned) {
+          setShowFlashcards(true);
+        }
+      }
     } catch (err) {
       setError('Failed to load video');
       console.error(err);
@@ -177,19 +189,43 @@ function VideoDetail() {
     }
   };
 
-  const handleAddDeck = async () => {
-    if (!video?.deck) return;
+  const handleCloseFlashcards = async () => {
+    setShowFlashcards(false);
+    setUserClosedWidget(true);
+    
+    // Reload video to get updated progress stats
+    if (id) {
+      await loadVideo(id);
+    }
+  };
 
+  const handleOpenFlashcards = () => {
+    setShowFlashcards(true);
+  };
+
+  const handleResetProgress = async () => {
+    if (!video?.deck) return;
+    
+    const confirmReset = window.confirm(
+      'Are you sure you want to reset all progress for this video? This will mark all words as unlearned.'
+    );
+    
+    if (!confirmReset) return;
+    
     try {
-      setAddingDeck(true);
-      await api.addDeckToVocab(video.deck.id);
-      // Show the flashcard modal instead of navigating away
-      setShowFlashcards(true);
+      setResettingProgress(true);
+      await api.resetDeckProgress(video.deck.id);
+      // Reload video to get fresh deck with all words
+      if (id) {
+        await loadVideo(id);
+      }
+      // Reset the userClosedWidget flag so flashcards can auto-open again
+      setUserClosedWidget(false);
     } catch (err) {
-      console.error('Failed to add deck:', err);
-      alert('Failed to add deck to vocab');
+      console.error('Failed to reset progress:', err);
+      alert('Failed to reset progress');
     } finally {
-      setAddingDeck(false);
+      setResettingProgress(false);
     }
   };
 
@@ -221,6 +257,55 @@ function VideoDetail() {
         ← Back
       </button>
 
+      {/* Progress Section */}
+      {video.deck && (video.deck.totalCount ?? 0) > 0 && (
+        <div className="progress-section">
+          {video.deck.learnedCount === video.deck.totalCount ? (
+            // Completion banner when all words are learned
+            <div className="completion-banner">
+              <div className="completion-message">
+                🎉 Amazing! You've learned all {video.deck.totalCount} words! 🎉
+              </div>
+            </div>
+          ) : (
+            // Progress bar when still learning
+            <>
+              <div className="progress-header">
+                Vocabulary Progress: {video.deck.learnedCount}/{video.deck.totalCount}
+              </div>
+              <div className="progress-bar-container">
+                <div className="progress-bar-track">
+                  <div 
+                    className="progress-bar-fill" 
+                    style={{ width: `${video.deck.percentLearned}%` }}
+                  />
+                </div>
+                <div className="progress-text">
+                  {video.deck.learnedCount} / {video.deck.totalCount} learned ({video.deck.percentLearned}%)
+                </div>
+              </div>
+            </>
+          )}
+          
+          <div className="progress-actions">
+            <button 
+              className="practice-button" 
+              onClick={handleOpenFlashcards}
+              disabled={video.deck.learnedCount === video.deck.totalCount}
+            >
+              Practice Vocabulary
+            </button>
+            <button 
+              className="reset-button" 
+              onClick={handleResetProgress}
+              disabled={resettingProgress}
+            >
+              {resettingProgress ? 'Resetting...' : 'Reset Progress'}
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="video-container">
         <h1 className="video-title">{video.title}</h1>
         <div className="video-player">
@@ -235,46 +320,17 @@ function VideoDetail() {
         </div>
       </div>
 
-      {video.deck && (
-        <div className="deck-section">
-          <h2>Vocabulary Deck</h2>
-          <div className="deck-info">
-            <div className="deck-header">
-              <h3>{video.deck.name}</h3>
-              <p className="word-count">{video.deck.words.length} words</p>
-            </div>
-            <button
-              className="add-deck-button"
-              onClick={handleAddDeck}
-              disabled={addingDeck}
-            >
-              {addingDeck ? 'Adding...' : 'Add to My Vocab & Practice'}
-            </button>
-          </div>
-          <div className="word-preview">
-            {video.deck.words.slice(0, 3).map((word, index) => (
-              <div key={index} className="word-preview-item">
-                <span className="english">{word.english}</span>
-                <span className="separator">→</span>
-                <span className="spanish">{word.spanish[0]}</span>
-              </div>
-            ))}
-            {video.deck.words.length > 3 && (
-              <p className="more-words">
-                +{video.deck.words.length - 3} more words
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Flashcard Modal Overlay */}
       {showFlashcards && video.deck && (
         <div className="flashcard-modal-overlay">
           <div className="flashcard-modal-content">
             <FlashcardWidget 
-              deckId={video.deck.id} 
-              onClose={() => setShowFlashcards(false)} 
+              deckId={video.deck.id}
+              videoTitle={video.title}
+              learnedCount={video.deck.learnedCount}
+              totalCount={video.deck.totalCount}
+              onClose={handleCloseFlashcards}
+              onResetProgress={handleResetProgress}
             />
           </div>
         </div>

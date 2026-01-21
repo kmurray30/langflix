@@ -425,3 +425,112 @@
     right: 0.5rem;
   }
 }
+
+/* Welcome screen styles */
+.welcome-container {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  line-height: 1.3;
+  background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-progress {
+  background-color: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.welcome-progress-label {
+  font-size: 1.2rem;
+  color: #e5e7eb;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.welcome-progress-bar-track {
+  width: 100%;
+  height: 20px;
+  background-color: #0f0f0f;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #374151;
+}
+
+.welcome-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  border-radius: 999px;
+  transition: width 0.5s ease-in-out;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.start-button {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  color: white;
+  padding: 1.25rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+}
+
+.reset-progress-button {
+  background-color: #374151;
+  border: 2px solid #4b5563;
+  color: #d1d5db;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-progress-button:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+
+  .welcome-progress-label {
+    font-size: 1rem;
+  }
+
+  .start-button {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}

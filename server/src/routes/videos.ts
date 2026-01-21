@@ -5,6 +5,7 @@ import { getSubtitles } from 'youtube-caption-extractor';
 import { decks, videos } from '../data/mockData';
 import { Subtitle } from '../types';
 import { loadTranslations, slugifyTitle } from '../utils/translations';
+import { calculateDeckStats } from '../utils/userProgress';
 
 const router = Router();
 
@@ -131,6 +132,20 @@ router.get('/:id', async (req, res) => {
   } else {
     // Use mockData for video-1 and video-2
     deck = decks.find(d => d.id === video.deckId);
+  }
+  
+  // Add progress statistics to deck if it exists
+  if (deck) {
+    const userId = req.sessionID;
+    const totalWords = deck.words.length;
+    const stats = calculateDeckStats(userId, deck.id, totalWords);
+    
+    deck = {
+      ...deck,
+      learnedCount: stats.learnedCount,
+      totalCount: stats.totalCount,
+      percentLearned: stats.percentLearned
+    };
   }
   
   // Fetch subtitles from YouTube (passing video ID and title for new filename format)

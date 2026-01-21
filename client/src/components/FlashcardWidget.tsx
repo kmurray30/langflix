@@ -12,7 +12,7 @@ function normalizeString(str: string): string {
     .trim();
 }
 
-type QuizState = 'quiz' | 'complete';
+type QuizState = 'welcome' | 'quiz' | 'complete';
 
 interface Answer {
   word: Word;
@@ -28,15 +28,19 @@ interface AnswerResult {
 
 interface FlashcardWidgetProps {
   deckId: string;
+  videoTitle?: string;
+  learnedCount?: number;
+  totalCount?: number;
   onClose?: () => void;
+  onResetProgress?: () => void;
 }
 
-function FlashcardWidget({ deckId, onClose }: FlashcardWidgetProps) {
+function FlashcardWidget({ deckId, videoTitle, learnedCount, totalCount, onClose, onResetProgress }: FlashcardWidgetProps) {
   const [deck, setDeck] = useState<Deck | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const [quizState, setQuizState] = useState<QuizState>('quiz');
+  const [quizState, setQuizState] = useState<QuizState>('welcome');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -132,7 +136,7 @@ function FlashcardWidget({ deckId, onClose }: FlashcardWidgetProps) {
     // Reload deck from server to get updated word list (excluding newly learned words)
     await loadDeck(deckId);
     
-    setQuizState('quiz');
+    setQuizState('welcome');
     setCurrentIndex(0);
     setUserInput('');
     setAnswers([]);
@@ -175,6 +179,61 @@ function FlashcardWidget({ deckId, onClose }: FlashcardWidgetProps) {
         )}
         <div className="message">
           Congratulations! You've learned all the words in this deck!
+        </div>
+      </div>
+    );
+  }
+
+  // Welcome screen
+  if (quizState === 'welcome') {
+    const calculatedTotalCount = totalCount ?? deck.words.length;
+    const calculatedLearnedCount = learnedCount ?? 0;
+    const percentLearned = calculatedTotalCount > 0 
+      ? Math.round((calculatedLearnedCount / calculatedTotalCount) * 100) 
+      : 0;
+
+    return (
+      <div className="flashcard-widget">
+        {onClose && (
+          <button className="close-button" onClick={onClose} aria-label="Close">
+            ×
+          </button>
+        )}
+
+        <div className="welcome-container">
+          <h1 className="welcome-title">
+            Welcome to<br />
+            {videoTitle || deck.name}
+          </h1>
+          
+          <div className="welcome-progress">
+            <div className="welcome-progress-label">
+              {calculatedLearnedCount} of {calculatedTotalCount} words learned
+            </div>
+            <div className="welcome-progress-bar-track">
+              <div 
+                className="welcome-progress-bar-fill" 
+                style={{ width: `${percentLearned}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="welcome-actions">
+            <button 
+              className="start-button" 
+              onClick={() => setQuizState('quiz')}
+            >
+              Start Quiz
+            </button>
+            {onResetProgress && (
+              <button 
+                className="reset-progress-button" 
+                onClick={onResetProgress}
+              >
+                Reset Progress
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );

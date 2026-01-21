@@ -1,3 +1,0 @@
-# Keep the subtitles directory but ignore all JSON files by default
-*.json
-
