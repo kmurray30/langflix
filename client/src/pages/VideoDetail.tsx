@@ -190,14 +190,12 @@ function VideoDetail() {
     }
   };
 
-  const handleCloseFlashcards = async () => {
+  const handleCloseFlashcards = () => {
     setShowFlashcards(false);
     setUserClosedWidget(true);
     
-    // Reload video to get updated progress stats, but skip auto-open
-    if (id) {
-      await loadVideo(id, true);
-    }
+    // Don't reload the video - the progress will be updated when the user returns
+    // This prevents the sluggish page refresh feeling
   };
 
   const handleOpenFlashcards = () => {
@@ -327,6 +325,7 @@ function VideoDetail() {
           <div className="flashcard-modal-content">
             <FlashcardWidget 
               deckId={video.deck.id}
+              videoId={video.id}
               videoTitle={video.title}
               learnedCount={video.deck.learnedCount}
               totalCount={video.deck.totalCount}

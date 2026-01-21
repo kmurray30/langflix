@@ -32,10 +32,6 @@ function MyVideosTab() {
     // Prevent navigation to video detail
     event.stopPropagation();
     
-    if (!confirm('Are you sure you want to remove this video from My Videos?')) {
-      return;
-    }
-    
     try {
       setRemovingVideoId(videoId);
       await api.unsaveVideo(videoId);

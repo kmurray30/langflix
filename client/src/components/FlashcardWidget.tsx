@@ -28,6 +28,7 @@ interface AnswerResult {
 
 interface FlashcardWidgetProps {
   deckId: string;
+  videoId?: string;
   videoTitle?: string;
   learnedCount?: number;
   totalCount?: number;
@@ -35,7 +36,7 @@ interface FlashcardWidgetProps {
   onResetProgress?: () => void;
 }
 
-function FlashcardWidget({ deckId, videoTitle, learnedCount, totalCount, onClose, onResetProgress }: FlashcardWidgetProps) {
+function FlashcardWidget({ deckId, videoId, videoTitle, learnedCount, totalCount, onClose, onResetProgress }: FlashcardWidgetProps) {
   const [deck, setDeck] = useState<Deck | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -184,6 +185,21 @@ function FlashcardWidget({ deckId, videoTitle, learnedCount, totalCount, onClose
     );
   }
 
+  const handleStartQuiz = async () => {
+    // Auto-save video when starting quiz (if videoId is provided)
+    if (videoId) {
+      try {
+        await api.saveVideo(videoId);
+        console.log('Auto-saved video to My Videos when starting quiz');
+      } catch (err) {
+        // Don't block quiz from starting if save fails
+        console.error('Failed to auto-save video:', err);
+      }
+    }
+    
+    setQuizState('quiz');
+  };
+
   // Welcome screen
   if (quizState === 'welcome') {
     const calculatedTotalCount = totalCount ?? deck.words.length;
@@ -221,7 +237,7 @@ function FlashcardWidget({ deckId, videoTitle, learnedCount, totalCount, onClose
           <div className="welcome-actions">
             <button 
               className="start-button" 
-              onClick={() => setQuizState('quiz')}
+              onClick={handleStartQuiz}
             >
               Start Quiz
             </button>
