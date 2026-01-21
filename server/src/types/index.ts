@@ -58,6 +58,7 @@ export interface AllUserProgress {
 declare module 'express-session' {
   interface SessionData {
     savedDeckIds: string[];
+    savedVideoIds: string[];
   }
 }
 

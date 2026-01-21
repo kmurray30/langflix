@@ -106,6 +106,100 @@ router.get('/', (req, res) => {
   res.json(videos);
 });
 
+// GET /api/videos/saved - Get user's saved videos with progress stats
+router.get('/saved', async (req, res) => {
+  const userId = req.sessionID;
+  const savedVideoIds = req.session.savedVideoIds || [];
+  const savedVideos = videos.filter(video => savedVideoIds.includes(video.id));
+  
+  // Add progress stats to each video's deck
+  const videosWithProgress = await Promise.all(
+    savedVideos.map(async (video) => {
+      // Load deck: use translation file for video-3, mockData for others
+      let deck;
+      if (video.id === 'video-3') {
+        const words = loadTranslations(video.id, video.title);
+        if (words) {
+          deck = {
+            id: video.deckId,
+            name: `Story Vocabulary - ${video.title}`,
+            words: words
+          };
+        }
+      } else {
+        deck = decks.find(deckItem => deckItem.id === video.deckId);
+      }
+      
+      // Add progress statistics to deck if it exists
+      if (deck) {
+        const totalWords = deck.words.length;
+        const stats = calculateDeckStats(userId, deck.id, totalWords);
+        
+        deck = {
+          ...deck,
+          learnedCount: stats.learnedCount,
+          totalCount: stats.totalCount,
+          percentLearned: stats.percentLearned
+        };
+      }
+      
+      return {
+        ...video,
+        deck
+      };
+    })
+  );
+  
+  res.json(videosWithProgress);
+});
+
+// POST /api/videos/:videoId/save - Save video to My Videos
+router.post('/:videoId/save', (req, res) => {
+  const { videoId } = req.params;
+  
+  // Check if video exists
+  const video = videos.find(videoItem => videoItem.id === videoId);
+  if (!video) {
+    return res.status(404).json({ error: 'Video not found' });
+  }
+  
+  // Initialize savedVideoIds if not exists
+  if (!req.session.savedVideoIds) {
+    req.session.savedVideoIds = [];
+  }
+  
+  // Add video if not already saved
+  if (!req.session.savedVideoIds.includes(videoId)) {
+    req.session.savedVideoIds.push(videoId);
+  }
+  
+  res.json({ 
+    success: true, 
+    video,
+    savedVideoIds: req.session.savedVideoIds 
+  });
+});
+
+// DELETE /api/videos/:videoId/save - Remove video from My Videos
+router.delete('/:videoId/save', (req, res) => {
+  const { videoId } = req.params;
+  
+  // Initialize savedVideoIds if not exists
+  if (!req.session.savedVideoIds) {
+    req.session.savedVideoIds = [];
+  }
+  
+  // Remove video from saved list
+  req.session.savedVideoIds = req.session.savedVideoIds.filter(
+    (savedVideoId: string) => savedVideoId !== videoId
+  );
+  
+  res.json({ 
+    success: true,
+    savedVideoIds: req.session.savedVideoIds 
+  });
+});
+
 // GET /api/videos/:id - Get single video with its deck and subtitles
 router.get('/:id', async (req, res) => {
   const video = videos.find(v => v.id === req.params.id);

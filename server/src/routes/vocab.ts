@@ -58,6 +58,21 @@ router.post('/:deckId', (req, res) => {
     req.session.savedDeckIds.push(deckId);
   }
   
+  // Auto-save the corresponding video to My Videos
+  const video = videos.find(videoItem => videoItem.deckId === deckId);
+  if (video) {
+    // Initialize savedVideoIds if not exists
+    if (!req.session.savedVideoIds) {
+      req.session.savedVideoIds = [];
+    }
+    
+    // Add video if not already saved
+    if (!req.session.savedVideoIds.includes(video.id)) {
+      req.session.savedVideoIds.push(video.id);
+      console.log(`Auto-saved video ${video.id} to My Videos when deck ${deckId} was added`);
+    }
+  }
+  
   res.json({ 
     success: true, 
     deck,

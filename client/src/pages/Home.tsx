@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import VideosTab from '../components/VideosTab';
-import VocabTab from '../components/VocabTab';
+import DiscoverTab from '../components/DiscoverTab';
+import MyVideosTab from '../components/MyVideosTab';
 import './Home.css';
 
-type TabType = 'videos' | 'vocab';
+type TabType = 'discover' | 'myVideos';
 
 function Home() {
-  const [activeTab, setActiveTab] = useState<TabType>('videos');
+  const [activeTab, setActiveTab] = useState<TabType>('discover');
 
   return (
     <div className="home">
@@ -14,21 +14,21 @@ function Home() {
         <h1 className="logo">Langflix</h1>
         <nav className="tabs">
           <button
-            className={`tab ${activeTab === 'videos' ? 'active' : ''}`}
-            onClick={() => setActiveTab('videos')}
+            className={`tab ${activeTab === 'discover' ? 'active' : ''}`}
+            onClick={() => setActiveTab('discover')}
           >
-            Videos
+            Discover
           </button>
           <button
-            className={`tab ${activeTab === 'vocab' ? 'active' : ''}`}
-            onClick={() => setActiveTab('vocab')}
+            className={`tab ${activeTab === 'myVideos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('myVideos')}
           >
-            Vocab
+            My Videos
           </button>
         </nav>
       </header>
       <main className="content">
-        {activeTab === 'videos' ? <VideosTab /> : <VocabTab />}
+        {activeTab === 'discover' ? <DiscoverTab /> : <MyVideosTab />}
       </main>
     </div>
   );

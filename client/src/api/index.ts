@@ -27,6 +27,21 @@ export const api = {
   // Get single video with deck
   getVideo: (videoId: string) => apiFetch<VideoWithDeck>(`/videos/${videoId}`),
 
+  // Get user's saved videos with progress
+  getSavedVideos: () => apiFetch<VideoWithDeck[]>('/videos/saved'),
+
+  // Save video to My Videos
+  saveVideo: (videoId: string) =>
+    apiFetch<{ success: boolean; video: Video }>(`/videos/${videoId}/save`, {
+      method: 'POST',
+    }),
+
+  // Remove video from My Videos
+  unsaveVideo: (videoId: string) =>
+    apiFetch<{ success: boolean }>(`/videos/${videoId}/save`, {
+      method: 'DELETE',
+    }),
+
   // Get user's saved vocab decks
   getVocab: () => apiFetch<Deck[]>('/vocab'),
 
